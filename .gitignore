@@ -1,0 +1,13 @@
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+.env/
+
+# Pytest cache
+.pytest_cache/
+
+# Local / temporary files
+CODE_REVIEW.md
