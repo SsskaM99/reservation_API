@@ -1,0 +1,4 @@
+"""
+In-memory storage implementation.
+"""
+
