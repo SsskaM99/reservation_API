@@ -66,3 +66,21 @@ def test_cannot_create_in_past():
 
     assert exc.value.status_code == 400
 
+def test_adjacent_reservations_do_not_overlap():
+    storage = InMemoryReservationStorage()
+
+    now = datetime.now(tz=UTC) + timedelta(days=1)
+
+    start1 = now
+    end1 = now + timedelta(hours=1)
+    payload1 = make_payload(start1, end1)
+    create_reservation(storage, payload1)
+
+    # Adjacent reservation: starts exactly when previous ends -> should be allowed
+    start2 = end1
+    end2 = end1 + timedelta(hours=1)
+    payload2 = make_payload(start2, end2)
+
+    # Should NOT raise
+    create_reservation(storage, payload2)
+

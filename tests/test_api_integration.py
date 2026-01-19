@@ -78,3 +78,22 @@ def test_cancel_reservation_and_404_after():
     del_resp2 = client.delete(f"/rooms/room-303/reservations/{res_id}")
     assert del_resp2.status_code == 404
 
+def test_list_empty_room_returns_empty_list():
+    client = TestClient(app)
+
+    response = client.get("/rooms/empty-room/reservations")
+
+    assert response.status_code == 200
+    assert response.json() == []
+
+def test_create_reservation_rejects_naive_datetime():
+    client = TestClient(app)
+
+    payload = {
+        "start_time": "2026-01-20T10:00:00",  # no timezone info
+        "end_time": "2026-01-20T11:00:00"
+    }
+
+    response = client.post("/rooms/room-1/reservations", json=payload)
+
+    assert response.status_code == 422
