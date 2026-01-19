@@ -8,8 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from app.core.config import UTC
 
 
-class ReservationBase(BaseModel):
-    room_id: str = Field(..., example="room-101")
+class ReservationTimeRange(BaseModel):
     title: str = Field(..., example="Weekly Sync")
     start_time: datetime = Field(
         ...,
@@ -32,6 +31,19 @@ class ReservationBase(BaseModel):
         if value_utc.utcoffset() != UTC.utcoffset(value_utc):
             raise ValueError("Datetime must be in UTC")
         return value_utc
+
+
+class ReservationCreateRequest(ReservationTimeRange):
+    """
+    Request body for creating a reservation.
+    Room is provided via the path parameter: /rooms/{room_id}/reservations
+    """
+
+    pass
+
+
+class ReservationBase(ReservationTimeRange):
+    room_id: str = Field(..., example="room-101")
 
 
 class ReservationCreate(ReservationBase):

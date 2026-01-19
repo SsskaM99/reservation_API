@@ -8,6 +8,7 @@ from app.api.deps import get_storage
 from app.models.schemas import (
     ErrorResponse,
     ReservationCreate,
+    ReservationCreateRequest,
     ReservationResponse,
 )
 from app.services import reservations as reservation_service
@@ -33,14 +34,13 @@ router = APIRouter()
 )
 def create_reservation(
     room_id: str,
-    payload: ReservationCreate = Body(
+    payload: ReservationCreateRequest = Body(
         ...,
         examples={
             "valid": {
                 "summary": "Valid reservation",
                 "description": "A simple 1-hour meeting in UTC.",
                 "value": {
-                    "room_id": "room-101",
                     "title": "Planning Meeting",
                     "start_time": "2026-01-20T09:00:00+00:00",
                     "end_time": "2026-01-20T10:00:00+00:00",
@@ -50,7 +50,6 @@ def create_reservation(
                 "summary": "Reservation in the past",
                 "description": "This will be rejected with HTTP 400.",
                 "value": {
-                    "room_id": "room-101",
                     "title": "Past Meeting",
                     "start_time": "2025-01-20T09:00:00+00:00",
                     "end_time": "2025-01-20T10:00:00+00:00",
@@ -63,9 +62,8 @@ def create_reservation(
     """
     Create a new reservation for a room.
     """
-    # Ensure payload room_id matches path
-    payload.room_id = room_id
-    reservation = reservation_service.create_reservation(storage, payload)
+    reservation_payload = ReservationCreate(room_id=room_id, **payload.model_dump())
+    reservation = reservation_service.create_reservation(storage, reservation_payload)
     return ReservationResponse(**reservation.model_dump())
 
 
