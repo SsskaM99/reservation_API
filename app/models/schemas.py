@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.core.config import UTC
 
@@ -22,8 +22,9 @@ class ReservationBase(BaseModel):
         example="2026-01-20T10:00:00+00:00",
     )
 
-    @validator("start_time", "end_time")
-    def ensure_timezone_aware_utc(cls, value: datetime) -> datetime:  # type: ignore[override]
+    @field_validator("start_time", "end_time")
+    @classmethod
+    def ensure_timezone_aware_utc(cls, value: datetime) -> datetime:
         if value.tzinfo is None:
             raise ValueError("Datetime must be timezone-aware and in UTC")
         # Normalize to UTC
@@ -46,8 +47,7 @@ class ReservationInStorage(ReservationBase):
 
 
 class ReservationResponse(ReservationInStorage):
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ErrorResponse(BaseModel):
