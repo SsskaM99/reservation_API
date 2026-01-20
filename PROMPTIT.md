@@ -178,7 +178,7 @@ Performed comprehensive code review of the entire codebase. Created `CODE_REVIEW
 
 The review identified 12 distinct issues grouped by category (Pydantic, API Design, Validation, Storage, Testing, Code Quality). Overall assessment: functionally correct baseline with deprecation warnings and API design improvements needed.
 
-## Prompt 5
+## Prompt 4
 
 **Timestamp:** 2026-01-19
 
@@ -216,3 +216,6 @@ Implemented the redundancy removal for reservation creation while keeping busine
 - **OpenAPI examples**: updated POST examples to remove `room_id` from the request body.
 
 **Verification:** `pytest` passes (7 tests).
+
+## Other Prompts
+Alussa syötin tehtävänannon Chat GPT 5.2 Versiolle ja loin tämän pohjalta suunnitelman. Koodauksen suoritin Cursorissa GPT:n tekemillä prompteilla.
